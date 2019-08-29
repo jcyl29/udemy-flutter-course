@@ -24,6 +24,7 @@ class _NewTransactionState extends State<NewTransaction> {
 
     // widget is a special property.  it allows this state Class to access the properties
     // of the NewTransaction widget this state Class connects to.
+    // only available in state Class
     widget.addTx(enteredTitle, enteredAmount);
 
     // context is another property that is available class wide

@@ -11,7 +11,37 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter App',
+      title: 'Personal Expenses',
+      theme: ThemeData(
+        // difference between swatch and color
+        // color is just a single color
+        // if you define a swatch, flutter widgets will know how to
+        // pick different shades of the color specififed
+        primarySwatch: Colors.purple,
+        // accentSwatch doesn't exist
+        accentColor: Colors.amber,
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              title: TextStyle(
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
+                fontSize: 21,
+              ),
+            ),
+        appBarTheme: AppBarTheme(
+          // this is a way to set the appBarTheme to have custom TextStyle
+          // (light font, different font family, etc)
+          // for all the titles of appBarTheme
+          // this will become useful when your app has multiple pages
+          // and you don't want to have to declare them in every page
+          textTheme: ThemeData.light().textTheme.copyWith(
+                title: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 30,
+                ),
+              ),
+        ),
+      ),
       home: MyHomePage(),
     );
   }
@@ -68,7 +98,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter App'),
+        title: Text(
+          'Personal Expenses',
+        ),
         actions: <Widget>[
           // normally add buttons in actions property of Scaffold
           IconButton(

@@ -27,24 +27,37 @@ class TransactionsList extends StatelessWidget {
                     10,
                   ),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.purple, width: 2),
+                    border: Border.all(
+                      // context has metadata about a widget.  It also has a way to accces
+                      // Theme object even though it is declared all the way up in
+                      // the main.dart
+                      color: Theme.of(context).primaryColorLight,
+                      width: 2,
+                    ),
                   ),
                   child: Text(
+                    // this is like the backtick string interpolation syntax in es6 javascript
                     '\$${transactions[index].amount.toStringAsFixed(2)}',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-                        color: Colors.purple),
+                        color: Theme.of(context).primaryColorDark),
                   ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(transactions[index].title,
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-                    Text(DateFormat.yMMMd().format(transactions[index].date),
-                        style: TextStyle(color: Colors.grey))
+                    Text(
+                      transactions[index].title,
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    Text(
+                      DateFormat.yMMMd().format(transactions[index].date),
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontFamily: 'Quicksand',
+                      ),
+                    ),
                   ],
                 )
               ],
