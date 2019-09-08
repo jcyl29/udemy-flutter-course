@@ -5,13 +5,14 @@ import '../models/transaction.dart';
 
 class TransactionsList extends StatelessWidget {
   final List<Transaction> transactions;
+  final Function deleteTx;
 
-  TransactionsList(this.transactions);
+  TransactionsList(this.transactions, this.deleteTx);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: 420,  // best solution is calculate this based on the viewport height, but hard code here as an example
       child: transactions.isEmpty
           ? Column(
               children: <Widget>[
@@ -38,6 +39,8 @@ class TransactionsList extends StatelessWidget {
                   elevation: 5,
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                   child: ListTile(
+                    // leading: widget shows at the beginning of the tile
+                    // trailing: widgets shows at the end of the tile
                     leading: CircleAvatar(
                       radius: 30,
                       child: Padding(
@@ -52,6 +55,11 @@ class TransactionsList extends StatelessWidget {
                     ),
                     subtitle: Text(
                       DateFormat.yMMMd().format(transactions[index].date),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Theme.of(context).errorColor,
+                      onPressed: () => deleteTx(transactions[index].id),
                     ),
                   ),
                 );

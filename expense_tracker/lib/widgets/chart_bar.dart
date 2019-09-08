@@ -11,10 +11,15 @@ class Chartbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        FittedBox(
-          // this will take care of really large amount values.  the text will be shrunk to fix in the box
-          child: Text(
-            '\$${spendingAmount.toStringAsFixed(0)}',
+        Container(
+          // this will forced the price label to have a consistent height
+          //since large number amounts will be shrunk by FittedBox and take up less space
+          height: 20,
+          child: FittedBox(
+            // this will take care of really large amount values.  the text will be shrunk to fix in the box
+            child: Text(
+              '\$${spendingAmount.toStringAsFixed(0)}',
+            ),
           ),
         ),
         SizedBox(

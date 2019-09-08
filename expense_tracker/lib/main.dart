@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 21,
               ),
+              button: TextStyle(color: Colors.white),
             ),
         appBarTheme: AppBarTheme(
           // this is a way to set the appBarTheme to have custom TextStyle
@@ -78,11 +79,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime chosenDate) {
     final newTx = Transaction(
       title: txTitle,
       amount: txAmount,
-      date: DateTime.now(),
+      date: chosenDate,
       id: DateTime.now().toString(),
     );
 
@@ -104,6 +106,12 @@ class _MyHomePageState extends State<MyHomePage> {
             // it is not happening anymore
           );
         });
+  }
+
+  void _deleteTransaction(String txId) {
+    setState(() {
+      _userTransactions.removeWhere((tx) => tx.id == txId);
+    });
   }
 
   @override
@@ -128,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               // Column only takes as much width as its child elements need
               Chart(_recentTranscations),
-              TransactionsList(_userTransactions),
+              TransactionsList(_userTransactions, _deleteTransaction),
             ]),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
