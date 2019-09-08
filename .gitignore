@@ -1,3 +1,8 @@
 */android
 */build
 */ios
+flexible_widget_playground/.gitignore
+flexible_widget_playground/.metadata
+flexible_widget_playground/pubspec.lock
+flexible_widget_playground/README.md
+flexible_widget_playground/test/widget_test.dart
