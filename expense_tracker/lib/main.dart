@@ -116,27 +116,40 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Personal Expenses',
-        ),
-        actions: <Widget>[
-          // normally add buttons in actions property of Scaffold
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _startAddNewTransaction(context),
-          )
-        ],
+    final appBar = AppBar(
+      title: Text(
+        'Personal Expenses',
       ),
+      actions: <Widget>[
+        // normally add buttons in actions property of Scaffold
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _startAddNewTransaction(context),
+        )
+      ],
+    );
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
             // mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               // Column only takes as much width as its child elements need
-              Chart(_recentTranscations),
-              TransactionsList(_userTransactions, _deleteTransaction),
+              Container(
+                  height: (MediaQuery.of(context).size.height -
+                          appBar.preferredSize.height -
+                          MediaQuery.of(context).padding.top) *
+                      0.3,
+                  child: Chart(_recentTranscations)),
+              Container(
+                  height: (MediaQuery.of(context).size.height -
+                          appBar.preferredSize.height -
+                          MediaQuery.of(context).padding.top) *
+                      0.7,
+                  child:
+                      TransactionsList(_userTransactions, _deleteTransaction)),
             ]),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -147,3 +160,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+// the full height of the device contains
+// Status Bar (MediaQuery.of(context).padding.top)
+// AppBar
+// Chart
+// TransactionList
