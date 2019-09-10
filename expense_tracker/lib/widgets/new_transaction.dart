@@ -18,7 +18,6 @@ class _NewTransactionState extends State<NewTransaction> {
   void _submitData() {
     if (_amountController.text.isEmpty) {
       return;
-
     }
     final enteredTitle = _titleController.text;
     final enteredAmount = double.parse(_amountController.text);
@@ -57,63 +56,71 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(labelText: 'Title'),
-              controller: _titleController,
-              onSubmitted: (_) => _submitData(),
-              // onChanged: (value) {
-              //   titleInput = value;
-              // },
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Amount'),
-              controller: _amountController,
-              // onChanged: (value) => amountInput = value,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onSubmitted: (_) =>
-                  _submitData(), // _ is a convention to mean we don't care about the arg in the function
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: <Widget>[
-                  Flexible(
-                    fit: FlexFit.tight,
-                    flex: 2,
-                    child: Text(_selectedDate == null
-                        ? 'No date chosen'
-                        : 'Picked date: ${DateFormat.yMd().format(_selectedDate)}'),
-                  ),
-                  Expanded(
-                    child: FlatButton(
-                      padding: EdgeInsets.all(1),
-                      textColor: Theme.of(context).primaryColor,
-                      child: Text(
-                        'Choose Date',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: _presentDatePicker,
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+              top: 10,
+              left: 10,
+              right: 10,
+              // viewInsets == the part of the display that are covered the system UI
+              // usually the soft keyboard that appears on a user input text field
+              bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(labelText: 'Title'),
+                controller: _titleController,
+                onSubmitted: (_) => _submitData(),
+                // onChanged: (value) {
+                //   titleInput = value;
+                // },
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Amount'),
+                controller: _amountController,
+                // onChanged: (value) => amountInput = value,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onSubmitted: (_) =>
+                    _submitData(), // _ is a convention to mean we don't care about the arg in the function
+              ),
+              Container(
+                height: 70,
+                child: Row(
+                  children: <Widget>[
+                    Flexible(
+                      fit: FlexFit.tight,
+                      flex: 2,
+                      child: Text(_selectedDate == null
+                          ? 'No date chosen'
+                          : 'Picked date: ${DateFormat.yMd().format(_selectedDate)}'),
                     ),
-                  )
-                ],
+                    Expanded(
+                      child: FlatButton(
+                        padding: EdgeInsets.all(1),
+                        textColor: Theme.of(context).primaryColor,
+                        child: Text(
+                          'Choose Date',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: _presentDatePicker,
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-            RaisedButton(
-              child: Text(
-                'Add Transaction',
+              RaisedButton(
+                child: Text(
+                  'Add Transaction',
+                ),
+                color: Theme.of(context).primaryColor,
+                textColor: Theme.of(context).textTheme.button.color,
+                onPressed: _submitData,
               ),
-              color: Theme.of(context).primaryColor,
-              textColor: Theme.of(context).textTheme.button.color,
-              onPressed: _submitData,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
