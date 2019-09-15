@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:expense_tracker/widgets/transaction_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import './widgets/new_transaction.dart';
 import './widgets/transaction_list.dart';
@@ -13,6 +12,10 @@ import './models/transaction.dart';
 void main() {
   // application or system wise settings
   // make the app show in portrait mode only
+
+  // requires this import:
+  // import 'package:flutter/services.dart';
+  
   // SystemChrome.setPreferredOrientations(
   //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(MyApp());
@@ -129,18 +132,38 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final appBar = AppBar(
-      title: Text(
-        'Personal Expenses',
-      ),
-      actions: <Widget>[
-        // normally add buttons in actions property of Scaffold
-        IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () => _startAddNewTransaction(context),
-        )
-      ],
-    );
+    final PreferredSizeWidget appBar = Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text(
+              'Personal Expenses',
+            ),
+            trailing: Row(
+              // if you don't set this mainAxisSize property, the trailing part of this widget, i.e. the one with the plus icon
+              // will take up the entire space of the screen.  that's why you don't see text from "middle" prop
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                // IconButton is a Material-specific widget.  It does not exist
+                // for Cupertino.  So GestureDetector is a replacement for IconButton
+                // for now until flutter releases a Cupertino-equivalent for IconButton
+                GestureDetector(
+                  child: Icon(CupertinoIcons.add),
+                  onTap: () => _startAddNewTransaction(context),
+                )
+              ],
+            ),
+          )
+        : AppBar(
+            title: Text(
+              'Personal Expenses',
+            ),
+            actions: <Widget>[
+              // normally add buttons in actions property of Scaffold
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => _startAddNewTransaction(context),
+              )
+            ],
+          );
     final txListWidget = Container(
         height: (mediaQuery.size.height -
                 appBar.preferredSize.height -
@@ -148,9 +171,8 @@ class _MyHomePageState extends State<MyHomePage> {
             1.0,
         child: TransactionsList(_userTransactions, _deleteTransaction));
 
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
+    final pageBody = SafeArea(
+      child: SingleChildScrollView(
         child: Column(
             // Column only takes as much width as its child elements need
             // mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -162,7 +184,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text('Show Chart'),
+                    Text(
+                      'Show Chart',
+                      style: Theme.of(context).textTheme.title,
+                    ),
                     Switch.adaptive(
                       // .adaptive will show IOS switch or Android switch automagically
                       activeColor: Theme.of(context).accentColor,
@@ -195,14 +220,25 @@ class _MyHomePageState extends State<MyHomePage> {
                     : txListWidget
             ]),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Platform.isIOS
-          ? Container()
-          : FloatingActionButton(
-              onPressed: () => _startAddNewTransaction(context),
-              child: Icon(Icons.add),
-            ),
     );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: pageBody,
+            navigationBar: appBar,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: pageBody,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    onPressed: () => _startAddNewTransaction(context),
+                    child: Icon(Icons.add),
+                  ),
+          );
   }
 }
 
