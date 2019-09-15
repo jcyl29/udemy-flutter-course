@@ -11,6 +11,7 @@ class TransactionsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("build() TransactionList");
     return transactions.isEmpty
         ? LayoutBuilder(
             builder: (ctx, constraints) {
@@ -20,7 +21,7 @@ class TransactionsList extends StatelessWidget {
                     'No transaction added yet',
                     style: Theme.of(context).textTheme.title,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20, // it is being used a seperator in this case
                   ),
                   Container(
@@ -46,7 +47,7 @@ class TransactionsList extends StatelessWidget {
                   leading: CircleAvatar(
                     radius: 30,
                     child: Padding(
-                      padding: EdgeInsets.all(3),
+                      padding: const EdgeInsets.all(3),
                       child: FittedBox(
                           child: Text('\$${transactions[index].amount}')),
                     ),
@@ -61,12 +62,16 @@ class TransactionsList extends StatelessWidget {
                   trailing: MediaQuery.of(context).size.width > 460
                       ? FlatButton.icon(
                           textColor: Theme.of(context).errorColor,
-                          icon: Icon(Icons.delete),
-                          label: Text('Delete'),
+                          icon: const Icon(Icons.delete),
+                          // using the const here:
+                          // this tells flutter that this Text widget will never change, so when widget tree is rebuilt, i.e. when build() of parent
+                          // widget gets called again,
+                          // it doesn't have to call build for this Text widget
+                          label: const Text('Delete'),
                           onPressed: () => deleteTx(transactions[index].id),
                         )
                       : IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           color: Theme.of(context).errorColor,
                           onPressed: () => deleteTx(transactions[index].id),
                         ),

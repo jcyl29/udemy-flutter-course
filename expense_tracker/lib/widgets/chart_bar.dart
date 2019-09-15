@@ -5,10 +5,15 @@ class Chartbar extends StatelessWidget {
   final double spendingAmount;
   final double spendingPctofTotal;
 
-  Chartbar(this.label, this.spendingAmount, this.spendingPctofTotal);
+  // this is a "const constructor"
+  // this means whenever you create this instance of this class, it will be unchangeable
+  // i.e immutable
+  // you cannot make an instance of ChartBar, and change its "spendingAmount" property, for example
+  const Chartbar(this.label, this.spendingAmount, this.spendingPctofTotal);
 
   @override
   Widget build(BuildContext context) {
+    print("build() Chartbar");
     return LayoutBuilder(builder: (ctx, constraints) {
       return Column(
         children: <Widget>[
