@@ -15,7 +15,7 @@ void main() {
 
   // requires this import:
   // import 'package:flutter/services.dart';
-  
+
   // SystemChrome.setPreferredOrientations(
   //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(MyApp());
@@ -128,13 +128,64 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    print ("build() MyHomePageState");
+  // example of a builder method
+  List<Widget> _buildLandscapeContent(
+      MediaQueryData mediaQuery, var appBar, Widget txListWidget) {
+    // using `var` as the type returned by appBar since it could be AppBar for Android
+    // or CupertinoNavigationBar for iOS
+    // basically i want the appBar to be restricted to 2 types.  This is called a union type
+    // and dart doesn't support it.  See:
+    // https://stackoverflow.com/questions/53236840/is-there-a-way-to-have-an-argument-with-two-types-in-dart
+    // https://github.com/dart-lang/sdk/issues/4938
+    // https://pub.dev/packages/sealed_unions
+    // just going to keep to just var for now
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Show Chart',
+            style: Theme.of(context).textTheme.title,
+          ),
+          Switch.adaptive(
+            // .adaptive will show IOS switch or Android switch automagically
+            activeColor: Theme.of(context).accentColor,
+            value: _showChart,
+            onChanged: (val) {
+              setState(() {
+                _showChart = val;
+              });
+            },
+          ),
+        ],
+      ),
+      _showChart
+          ? Container(
+              height: (mediaQuery.size.height -
+                      appBar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.7,
+              child: Chart(_recentTranscations))
+          : txListWidget
+    ];
+  }
 
-    final mediaQuery = MediaQuery.of(context);
-    final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final PreferredSizeWidget appBar = Platform.isIOS
+  List<Widget> _buildPortraitContent(
+      MediaQueryData mediaQuery, var appBar, Widget txListWidget) {
+    return [
+      Container(
+        height: (mediaQuery.size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.3,
+        child: Chart(_recentTranscations),
+      ),
+      txListWidget
+    ];
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text(
               'Personal Expenses',
@@ -166,12 +217,25 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             ],
           );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("build() MyHomePageState");
+
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final PreferredSizeWidget appBar = _buildAppBar();
     final txListWidget = Container(
-        height: (mediaQuery.size.height -
-                appBar.preferredSize.height -
-                mediaQuery.padding.top) *
-            1.0,
-        child: TransactionsList(_userTransactions, _deleteTransaction));
+      height: (mediaQuery.size.height -
+              appBar.preferredSize.height -
+              mediaQuery.padding.top) *
+          1.0,
+      child: TransactionsList(
+        _userTransactions,
+        _deleteTransaction,
+      ),
+    );
 
     final pageBody = SafeArea(
       child: SingleChildScrollView(
@@ -183,43 +247,10 @@ class _MyHomePageState extends State<MyHomePage> {
               // this is special if syntax, i.e. an if inside a list.  it doesn't need braces ({})
               // inside the if block
               if (isLandscape)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'Show Chart',
-                      style: Theme.of(context).textTheme.title,
-                    ),
-                    Switch.adaptive(
-                      // .adaptive will show IOS switch or Android switch automagically
-                      activeColor: Theme.of(context).accentColor,
-                      value: _showChart,
-                      onChanged: (val) {
-                        setState(() {
-                          _showChart = val;
-                        });
-                      },
-                    ),
-                  ],
-                ),
+                ..._buildLandscapeContent(mediaQuery, appBar, txListWidget),
               if (!isLandscape)
-                Container(
-                    height: (mediaQuery.size.height -
-                            appBar.preferredSize.height -
-                            mediaQuery.padding.top) *
-                        0.3,
-                    child: Chart(_recentTranscations)),
-              if (!isLandscape)
-                txListWidget,
-              if (isLandscape)
-                _showChart
-                    ? Container(
-                        height: (mediaQuery.size.height -
-                                appBar.preferredSize.height -
-                                mediaQuery.padding.top) *
-                            0.7,
-                        child: Chart(_recentTranscations))
-                    : txListWidget
+                // using spread operator (...) to flatten out the List<Widget> that _buildPortraitContent returns
+                ..._buildPortraitContent(mediaQuery, appBar, txListWidget),
             ]),
       ),
     );
