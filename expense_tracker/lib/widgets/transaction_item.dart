@@ -11,12 +11,14 @@ import 'package:expense_tracker/models/transaction.dart';
 
 class TransactionItem extends StatefulWidget {
   // StatelessWidgets by themselves don't need a key
-  // but when combined with other Stateful widget, not having a key can be a problem
+  // flutter doesn't need keys default. the default mechiism of identifying widgets by type
+  // works most of the time
+  // But when you have listview with stateful children, you need keys, use a valueKey, not a uniqueKey
   const TransactionItem({
     Key key,
     @required this.transaction,
     @required this.deleteTx,
-  }) : super(key: key);
+  }) : super(key: key);  // Constructor initializer list -> this shorthand allows the parent widget/class to calls its own constructor
 
   final Transaction transaction;
   final Function deleteTx;
