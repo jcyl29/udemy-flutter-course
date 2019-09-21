@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -7,7 +9,9 @@ import 'package:expense_tracker/models/transaction.dart';
 // Right click, choose Refactor, then choose Extract Widget
 // then type name of new Widget
 
-class TransactionItem extends StatelessWidget {
+class TransactionItem extends StatefulWidget {
+  // StatelessWidgets by themselves don't need a key
+  // but when combined with other Stateful widget, not having a key can be a problem
   const TransactionItem({
     Key key,
     @required this.transaction,
@@ -18,6 +22,28 @@ class TransactionItem extends StatelessWidget {
   final Function deleteTx;
 
   @override
+  _TransactionItemState createState() => _TransactionItemState();
+}
+
+class _TransactionItemState extends State<TransactionItem> {
+  Color _bgColor;
+
+  @override
+  void initState() {
+    const availableColors = [
+      Colors.red,
+      Colors.black,
+      Colors.blue,
+      Colors.purple
+    ];
+
+    print("availableColors.length=${availableColors.length}");
+
+    _bgColor = availableColors[Random().nextInt(availableColors.length)];
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
@@ -26,18 +52,19 @@ class TransactionItem extends StatelessWidget {
         // leading: widget shows at the beginning of the tile
         // trailing: widgets shows at the end of the tile
         leading: CircleAvatar(
+          backgroundColor: _bgColor,
           radius: 30,
           child: Padding(
             padding: const EdgeInsets.all(3),
-            child: FittedBox(child: Text('\$${transaction.amount}')),
+            child: FittedBox(child: Text('\$${widget.transaction.amount}')),
           ),
         ),
         title: Text(
-          transaction.title,
+          widget.transaction.title,
           style: Theme.of(context).textTheme.title,
         ),
         subtitle: Text(
-          DateFormat.yMMMd().format(transaction.date),
+          DateFormat.yMMMd().format(widget.transaction.date),
         ),
         trailing: MediaQuery.of(context).size.width > 460
             ? FlatButton.icon(
@@ -48,12 +75,12 @@ class TransactionItem extends StatelessWidget {
                 // widget gets called again,
                 // it doesn't have to call build for this Text widget
                 label: const Text('Delete'),
-                onPressed: () => deleteTx(transaction.id),
+                onPressed: () => widget.deleteTx(widget.transaction.id),
               )
             : IconButton(
                 icon: const Icon(Icons.delete),
                 color: Theme.of(context).errorColor,
-                onPressed: () => deleteTx(transaction.id),
+                onPressed: () => widget.deleteTx(widget.transaction.id),
               ),
       ),
     );

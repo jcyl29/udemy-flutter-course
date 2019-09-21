@@ -70,7 +70,9 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+// the `with` syntax is a called a mixin
+// https://medium.com/flutter-community/https-medium-com-shubhamhackzz-dart-for-flutter-mixins-in-dart-f8bb10a3d341
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   final List<Transaction> _userTransactions = [
     // Transaction(
     //     id: 't1', title: 'new shoes', amount: 69.99, date: DateTime.now()),
@@ -92,6 +94,47 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }).toList();
   }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+  
+  // didChangeAppLifecycleState came from WidgetsBindingObserver
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    print(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // example logging when tapping context switch button when app is open
+  // I/flutter (17874): AppLifecycleState.inactive
+  // D/EGL_emulation(17874): eglMakeCurrent: 0x9b40b320: ver 2 0 (tinfo 0x8b7e3870)
+  // I/flutter (17874): AppLifecycleState.paused
+
+  // example logging after tapping the app again to bring it back into focus
+  // I/flutter (17874): AppLifecycleState.paused
+  // I/flutter (17874): AppLifecycleState.inactive
+  // I/flutter (17874): AppLifecycleState.resumed
+
+  // example logging when closing the app
+  // D/EGL_emulation(17874): eglCreateContext: 0x9fb85360: maj 2 min 0 rcv 2
+  // D/EGL_emulation(17874): eglMakeCurrent: 0x9fb85360: ver 2 0 (tinfo 0x9fb832c0)
+  // D/EGL_emulation(17874): eglMakeCurrent: 0x9b40b320: ver 2 0 (tinfo 0x8b7e3870)
+  // D/EGL_emulation(17874): eglMakeCurrent: 0x9fb85360: ver 2 0 (tinfo 0x9fb832c0)
+  // I/flutter (17874): AppLifecycleState.inactive
+  // D/EGL_emulation(17874): eglMakeCurrent: 0x9b40b320: ver 2 0 (tinfo 0x8b7e3870)
+  // I/flutter (17874): AppLifecycleState.paused
+  // Lost connection to device.
+  // Exited (sigterm)  
+
 
   void _addNewTransaction(
       String txTitle, double txAmount, DateTime chosenDate) {

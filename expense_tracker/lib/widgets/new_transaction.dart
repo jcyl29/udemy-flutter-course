@@ -7,16 +7,52 @@ import 'package:expense_tracker/widgets/adaptive_flat_button.dart';
 class NewTransaction extends StatefulWidget {
   final Function addTx;
 
-  NewTransaction(this.addTx);
+  NewTransaction(this.addTx) {
+    print('Constructor NewTransaction Widget');
+  }
 
   @override
-  _NewTransactionState createState() => _NewTransactionState();
+  _NewTransactionState createState() {
+    print('createState NewTransaction Widget');
+    return _NewTransactionState();
+  }
 }
 
 class _NewTransactionState extends State<NewTransaction> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   DateTime _selectedDate;
+
+  _NewTransactionState() {
+    print('Constructor _NewTransactionState');
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    // super is a keyword that refers to the parent Class, i.e. the extended State class
+    
+    // uses: fetching some initial data
+    print('initState');
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(NewTransaction oldWidget) {
+    // TODO: implement didUpdateWidget
+    // uses: fetching data from a db, and you need to compare something to possibly fetch new data
+    print('didUpdateWidget');
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    // uses: clean up event listeners, or any other cleanup work
+    print('dispose');
+    super.dispose();
+  }
 
   void _submitData() {
     if (_amountController.text.isEmpty) {
