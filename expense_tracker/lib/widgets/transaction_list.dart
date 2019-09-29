@@ -25,7 +25,7 @@ class TransactionsList extends StatelessWidget {
                     height: 20, // it is being used a seperator in this case
                   ),
                   Container(
-                      height: constraints.maxHeight * .5,
+                      height: constraints.maxHeight * .2,
                       child: Image.asset(
                         'assets/images/waiting.png',
                         fit: BoxFit
