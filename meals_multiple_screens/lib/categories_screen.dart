@@ -12,8 +12,10 @@ class CategoriesScreen extends StatelessWidget {
           title: const Text('DeliMeal'),
         ),
         body: GridView(
+          padding: const EdgeInsets.all(25),
           children: DUMMY_CATEGORIES
               .map((catData) => CategoryItem(
+                    catData.id,
                     catData.title,
                     catData.color,
                   ))
@@ -21,7 +23,7 @@ class CategoriesScreen extends StatelessWidget {
           // slivers in flutter are scrollable areas on the screen
           // grid delgate == structuring layout in the grid
           // WithMaxCrossAxisExtent = preconfigured class which allows to define a maxinum width for each grid item
-          // each item will fill up the container constrains, creating columns if needed
+          // each item will fill up the container constraints, creating columns/rows if needed
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 200,
             childAspectRatio: 3 /
